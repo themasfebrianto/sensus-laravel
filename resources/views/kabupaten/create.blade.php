@@ -21,11 +21,11 @@
                 <input type="text" name="nama_kabupaten" id="nama_kabupaten"
                     class="form-control @error('nama_kabupaten') is-invalid @enderror" autofocus></br>
                 @error('nama_kabupaten')
-                    <div class="invalid-feedback">
+                    <div class="invalid-feedback mb-4">
                         {{ $message }}
                     </div>
                 @enderror
-                <input class="btn btn-success mt-2" type="submit" value="Simpan">
+                <input class="btn btn-success" type="submit" value="Simpan">
             </form>
 
         </div>

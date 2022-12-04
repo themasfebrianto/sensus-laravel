@@ -13,5 +13,9 @@ class Kabupaten extends Model
     protected $table = "m_kabupaten";
     protected $primaryKey = "id_kabupaten";
     protected $fillable = ['nama_kabupaten'];
-    
+
+    public function kecamatan()
+    {
+        $this->hasMany(Kecamatan::class);
+    }
 }

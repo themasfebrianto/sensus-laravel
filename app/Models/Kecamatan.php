@@ -14,4 +14,9 @@ class Kecamatan extends Model
     protected $primaryKey = "id_kecamatan";
     protected $forignKey = "id_kabupaten";
     protected $fillable = ['nama_kecamatan'];
+
+    public function kabupaten()
+    {
+        $this->belongsTo(Kabupaten::class);
+    }
 }

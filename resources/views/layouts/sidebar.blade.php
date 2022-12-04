@@ -61,6 +61,14 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('peringkat.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa fa-database"></i>
+                                <p>
+                                    Peringkat
+                                </p>
+                            </a>
+                        </li>
 
                     </ul>
                 </nav>

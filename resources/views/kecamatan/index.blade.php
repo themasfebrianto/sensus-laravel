@@ -16,24 +16,27 @@
                 {{ session('flash_message') }}
             </div>
         @endif
-
         <div class="card">
-            <div class="card-header">
-                <form class="row row-cols-lg-auto g-1">
-                    <div class="col">
-                        <input class="form-control" type="text" name="q" value=""
-                            placeholder="Cari Disni..." />
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-success">Search</button>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <a href="{{ route('kecamatan.create') }}" class="btn btn-primary">Tambah</a>
+            <div class="card-header d-flex">
+                <form action="{{ route('kecamatan.search') }}" class="col-10">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Cari Kecamatan"
+                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-warning " type="submit">Search</button>
                         </div>
-
                     </div>
                 </form>
+                <div class="ml-4">
+                    <div class="col">
+                        <a href="{{ route('kecamatan.create') }}" class="btn btn-primary">Tambah</a>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <div class="col">
+                        <a href="{{ url('kecamatan/cetak_pdf') }}" class="btn btn-secondary" target="_blank">Cetak PDF</a>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <table class="table table-striped table-bordered">

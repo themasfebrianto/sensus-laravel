@@ -16,23 +16,32 @@
                 {{ session('flash_message') }}
             </div>
         @endif
+        @if (session()->has('constraint'))
+            <div class="alert alert-danger mb-2" role="alert">
+                {{ session('constraint') }}
+            </div>
+        @endif
         <div class="card">
-            <div class="card-header">
-                <form class="row row-cols-lg-auto g-1">
-                    <div class="col">
-                        <input class="form-control" type="text" name="q" value=""
-                            placeholder="Cari Disni..." />
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-success">Search</button>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <a href="{{ route('kabupaten.create') }}" class="btn btn-primary">Tambah</a>
-                        </div>
 
+            <div class="card-header d-flex">
+                <form action="{{ route('kabupaten.search') }}" class="col-10">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Cari Kabupaten" name="nama_kabupaten">
+                        <div class="input-group-append">
+                            <button class="btn btn-warning " type="submit">Search</button>
+                        </div>
                     </div>
                 </form>
+                <div class="ml-4">
+                    <div class="col">
+                        <a href="{{ route('kabupaten.create') }}" class="btn btn-primary">Tambah</a>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <div class="col">
+                        <a href="{{ route('kabupaten.cetakpdf') }}" class="btn btn-secondary" target="_blank">Cetak PDF</a>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <table class="table table-striped table-bordered">

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Kabupaten;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class KabupatenController extends Controller
 {
@@ -18,6 +21,32 @@ class KabupatenController extends Controller
         return view('kabupaten/index', compact('kabupaten'));
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cetak_pdf()
+    {
+        $kabupaten = Kabupaten::all();
+
+        $pdf = Pdf::loadview('kabupaten/kabupaten_pdf', ['kabupaten' => $kabupaten]);
+        return $pdf->download('laporan-Data-Kabupaten-pdf');
+    }
+
+    // /**
+    //  * Show the form for creating a new resource.
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @return \Illuminate\Http\Response
+    //  */
+    public function search(Request $request)
+    {
+        $search = $request->nama_kabupaten;
+        $kabupaten = DB::table('m_kabupaten')
+            ->where('nama_kabupaten', 'ilike', "%" . $search . "%")
+            ->paginate(10);
+        return view('kabupaten/index', compact('kabupaten'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -98,7 +127,11 @@ class KabupatenController extends Controller
      */
     public function destroy($id)
     {
-        Kabupaten::destroy($id);
-        return redirect('kabupaten');
+        try {
+            Kabupaten::destroy($id);
+            return redirect('kabupaten')->with('flash_message', 'Kabupaten berhasil di hapus');
+        } catch (Exception) {
+            return redirect('kabupaten')->with('constraint', 'Kabupaten terdaftar pada data kecamatan');
+        }
     }
 }

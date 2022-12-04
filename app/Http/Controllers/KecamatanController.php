@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kabupaten;
 use App\Models\kecamatan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -25,6 +26,36 @@ class kecamatanController extends Controller
 
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cetak_pdf()
+    {
+        $kecamatan = DB::table('m_kecamatan')
+            ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
+            ->get();
+
+        $pdf = Pdf::loadview('kecamatan/kecamatan_pdf', ['kecamatan' => $kecamatan]);
+        return $pdf->download('laporan-Data-kecamatan-pdf');
+    }
+
+
+    // /**
+    //  * Show the form for creating a new resource.
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @return \Illuminate\Http\Response
+    //  */
+    public function search(Request $request)
+    {
+        $search = $request->nama_kecamatan;
+        $kecamatan = DB::table('m_kecamatan')
+            ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
+            ->where('nama_kecamatan', 'ilike', "%" . $search . "%")
+            ->paginate(10);
+        return view('kecamatan/index', compact('kecamatan'));
+    }
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -43,9 +74,6 @@ class kecamatanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kecamatan' => 'required|unique:m_kecamatan'
-        ]);
 
         $kecamatan = new kecamatan();
         $kecamatan->id_kecamatan = \Ramsey\Uuid\Uuid::uuid4()->toString();
@@ -63,10 +91,10 @@ class kecamatanController extends Controller
      */
     public function show($id)
     {
-        $kabupaten = Kabupaten::all()->pluck('nama_kabupaten', 'id_kabupaten');
-        $kecamatan = kecamatan::find($id);
-        $id_kabupaten = $kecamatan->id_kabupaten;
-        $nama_kabupaten = Kabupaten::find($id_kabupaten);
+        $kabupaten = Kabupaten::all()->pluck('nama_kabupaten', 'id_kabupaten'); //query untuk dropdown
+        $kecamatan = kecamatan::find($id); //query untuk ambil data kecamatan 
+        $id_kabupaten = $kecamatan->id_kabupaten; //kode untuk ambil data id kabupaten dalam row kecamatan
+        $nama_kabupaten = Kabupaten::find($id_kabupaten); // query untuk ambil nama kabupaten berdasarkan id_kabupaten dalam table kecamatan
         return view('kecamatan/edit', compact('kecamatan', 'kabupaten', 'nama_kabupaten'));
         // return response()->json($kecamatan, 200);
     }

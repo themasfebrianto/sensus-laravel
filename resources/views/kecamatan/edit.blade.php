@@ -28,8 +28,7 @@
                 @enderror
                 <label for="id_kabupaten">Kabupaten</label></br>
                 <select name="id_kabupaten" id="id_kabupaten" class="form-control">
-                    <option value="">{{ $nama_kabupaten->nama_kabupaten }}</option>
-                    <!--hasil pluck dari controller produk.index di iterasi di sini-->
+                    <option value="{{ $kecamatan->id_kabupaten }}">{{ $nama_kabupaten->nama_kabupaten }}</option>
                     @foreach ($kabupaten as $key => $item)
                         <option value="{{ $key }}">{{ $item }}</option>
                     @endforeach
