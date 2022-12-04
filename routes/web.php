@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\ProfileController;
@@ -16,13 +17,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn () => redirect()->route('login'));
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(
+    function () {
+        Route::get(
+            '/dashboard',
+            [DashboardController::class, 'index']
+        )->name('dashboard');
+    }
+);
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -33,11 +39,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(
     function () {
         Route::get('/kabupaten', [KabupatenController::class, 'index'])->name('kabupaten.index');
+        Route::resource("/kabupaten", KabupatenController::class);
     }
 );
 Route::middleware('auth')->group(
     function () {
         Route::get('/kecamatan', [KecamatanController::class, 'index'])->name('kecamatan.index');
+        Route::resource("/kecamatan", KecamatanController::class);
     }
 );
 require __DIR__ . '/auth.php';

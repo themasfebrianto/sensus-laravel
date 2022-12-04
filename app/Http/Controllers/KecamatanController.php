@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kecamatan;
+use App\Models\Kabupaten;
+use App\Models\kecamatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class KecamatanController extends Controller
+class kecamatanController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $kecamatan = DB::table('m_kecamatan')
             ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
-            ->get();
+            ->paginate(10);
 
         return view('kecamatan/index')->with('kecamatan', $kecamatan);
     }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -28,7 +31,8 @@ class KecamatanController extends Controller
      */
     public function create()
     {
-        //
+        $kabupaten = Kabupaten::all()->pluck('nama_kabupaten', 'id_kabupaten');
+        return view('kecamatan/create', compact('kabupaten'));
     }
 
     /**
@@ -39,7 +43,16 @@ class KecamatanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_kecamatan' => 'required|unique:m_kecamatan'
+        ]);
+
+        $kecamatan = new kecamatan();
+        $kecamatan->id_kecamatan = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $kecamatan->nama_kecamatan = $request->nama_kecamatan;
+        $kecamatan->id_kabupaten = $request->id_kabupaten;
+        $kecamatan->save();
+        return redirect('kecamatan')->with('flash_message', 'Sukses Menambahkan Kecamatan!');
     }
 
     /**
@@ -50,9 +63,13 @@ class KecamatanController extends Controller
      */
     public function show($id)
     {
-        //
+        $kabupaten = Kabupaten::all()->pluck('nama_kabupaten', 'id_kabupaten');
+        $kecamatan = kecamatan::find($id);
+        $id_kabupaten = $kecamatan->id_kabupaten;
+        $nama_kabupaten = Kabupaten::find($id_kabupaten);
+        return view('kecamatan/edit', compact('kecamatan', 'kabupaten', 'nama_kabupaten'));
+        // return response()->json($kecamatan, 200);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -61,7 +78,6 @@ class KecamatanController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -73,7 +89,14 @@ class KecamatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama_kecamatan' => 'required|unique:m_kecamatan'
+        ]);
+
+        $kecamatan = kecamatan::find($id);
+        $input = $request->all();
+        $kecamatan->update($input);
+        return redirect('kecamatan')->with('flash_message', 'Sukses Mengedit Kecamatan!');
     }
 
     /**
@@ -84,6 +107,7 @@ class KecamatanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        kecamatan::destroy($id);
+        return redirect('kecamatan');
     }
 }

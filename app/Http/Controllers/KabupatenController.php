@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Kabupaten;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables as DataTablesDataTables;
-use Yajra\DataTables\Facades\DataTables;
 
 class KabupatenController extends Controller
 {
@@ -16,21 +14,8 @@ class KabupatenController extends Controller
      */
     public function index(Request $request)
     {
-        // $kabupaten = Kabupaten::all();
-        // return view('kabupaten/index')->with('kabupaten', $kabupaten);
-
-        if ($request->ajax()) {
-            $data = Kabupaten::select('id_kabupaten', 'nama_kabupaten')->get();
-            return DataTables::of($data)->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    $btn = '<a href="javascript:void(0)" class="btn btn-primary btn-sm">View</a>';
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-
-        return view('kabupaten.index');
+        $kabupaten = Kabupaten::paginate(10);
+        return view('kabupaten/index', compact('kabupaten'));
     }
 
 
@@ -41,7 +26,7 @@ class KabupatenController extends Controller
      */
     public function create()
     {
-        //
+        return view('kabupaten/create');
     }
 
     /**
@@ -52,7 +37,15 @@ class KabupatenController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_kabupaten' => 'required|unique:m_kabupaten'
+        ]);
+
+        $kabupaten = new Kabupaten();
+        $kabupaten->id_kabupaten = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $kabupaten->nama_kabupaten = $request->nama_kabupaten;
+        $kabupaten->save();
+        return redirect('kabupaten')->with('flash_message', 'Sukses Menambahkan Kabupaten!');
     }
 
     /**
@@ -63,7 +56,9 @@ class KabupatenController extends Controller
      */
     public function show($id)
     {
-        //
+        $kabupaten = Kabupaten::find($id);
+        return view('kabupaten/edit', compact('kabupaten'));
+        // return response()->json($kecamatan, 200);
     }
 
     /**
@@ -74,7 +69,6 @@ class KabupatenController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -86,7 +80,14 @@ class KabupatenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama_kabupaten' => 'required|unique:m_kabupaten'
+        ]);
+
+        $kabupaten = Kabupaten::find($id);
+        $input = $request->all();
+        $kabupaten->update($input);
+        return redirect('kabupaten')->with('flash_message', 'Sukses Mengedit Kabupaten!');
     }
 
     /**
@@ -97,6 +98,7 @@ class KabupatenController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Kabupaten::destroy($id);
+        return redirect('kabupaten');
     }
 }

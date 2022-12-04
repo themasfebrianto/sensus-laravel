@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Kecamatan extends Model
 {
     use HasFactory;
+    public $incrementing = false;
+
     protected $table = "m_kecamatan";
-    protected $primaryKey = "id_kabupaten";
+    protected $primaryKey = "id_kecamatan";
     protected $forignKey = "id_kabupaten";
+    protected $fillable = ['nama_kecamatan'];
 }
