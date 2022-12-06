@@ -25,7 +25,6 @@
                             Please provide a valid email.
                         </div>
                     </div>
-
                     <div class="input-group mb-3">
                         <input type="password" name="password" id="email"
                             class="form-control @error('password') is-invalid  @enderror" placeholder="Password" required>
@@ -53,6 +52,7 @@
                         </div>
                         <!-- /.col -->
                     </div>
+
                 </form>
 
             </div>

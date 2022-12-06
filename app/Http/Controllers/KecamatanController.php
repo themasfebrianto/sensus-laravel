@@ -37,7 +37,7 @@ class kecamatanController extends Controller
             ->get();
 
         $pdf = Pdf::loadview('kecamatan/kecamatan_pdf', ['kecamatan' => $kecamatan]);
-        return $pdf->download('laporan-Data-kecamatan-pdf');
+        return $pdf->stream('laporan-Data-kecamatan-pdf', array("Attachment" => 0));
     }
 
 
@@ -48,10 +48,11 @@ class kecamatanController extends Controller
     //  */
     public function search(Request $request)
     {
-        $search = $request->nama_kecamatan;
         $kecamatan = DB::table('m_kecamatan')
             ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
-            ->where('nama_kecamatan', 'ilike', "%" . $search . "%")
+            ->select('m_kabupaten.*', 'm_kecamatan.*')
+            ->distinct()
+            ->where('nama_kecamatan', 'ilike', "%" . $request->nama_kecamatan . "%")
             ->paginate(10);
         return view('kecamatan/index', compact('kecamatan'));
     }

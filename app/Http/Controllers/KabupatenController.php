@@ -31,7 +31,7 @@ class KabupatenController extends Controller
         $kabupaten = Kabupaten::all();
 
         $pdf = Pdf::loadview('kabupaten/kabupaten_pdf', ['kabupaten' => $kabupaten]);
-        return $pdf->download('laporan-Data-Kabupaten-pdf');
+        return $pdf->stream('laporan-Data-Kabupaten-pdf', array("Attachment" => 0));
     }
 
     // /**

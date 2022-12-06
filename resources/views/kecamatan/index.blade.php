@@ -20,8 +20,7 @@
             <div class="card-header d-flex">
                 <form action="{{ route('kecamatan.search') }}" class="col-10">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Cari Kecamatan"
-                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control" placeholder="Cari kecamatan" name="nama_kecamatan">
                         <div class="input-group-append">
                             <button class="btn btn-warning " type="submit">Search</button>
                         </div>
