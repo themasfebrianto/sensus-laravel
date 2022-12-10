@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('m_kecamatan', function (Blueprint $table) {
             $table->uuid('id_kecamatan')->primary();
-            $table->string('nama_kecamatan', 100)->unique();
+            $table->string('nama_kecamatan', 100);
             $table->uuid('id_kabupaten')->references('id_kabupaten')->on('m_kabupaten');
             $table->timestamps();
         });

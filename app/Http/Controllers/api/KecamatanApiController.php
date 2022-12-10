@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
-use App\Models\Kecamatan;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\ApiResource;
+use App\Models\Kecamatan;
+use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class KecamatanApiController extends Controller
 {
@@ -15,9 +19,7 @@ class KecamatanApiController extends Controller
     public function index()
     {
         $kecamatan = Kecamatan::paginate(10);
-        return response()->json([
-            'data' => $kecamatan
-        ]);
+        return new ApiResource(true, 'list data kecamatan', $kecamatan);
     }
 
     /**
@@ -38,27 +40,35 @@ class KecamatanApiController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'nama_kecamatan' => 'required|unique:m_kecamatan'
+        ]);
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+
         $kecamatan = Kecamatan::create([
-            'id_kecamatan' => $request->id_kecamatan,
+            'id_kecamatan' => Uuid::uuid4(),
             'nama_kecamatan' => $request->nama_kecamatan,
-            'id_kabupaten' => $request->id_kabupaten
+            'id_kabupaten' => $request->id_kabupaten,
         ]);
-        return response()->json([
-            'data' => $kecamatan
-        ]);
+
+        return new ApiResource(true, 'Data kecamatan Berhasil Ditambahkan!', $kecamatan);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Kecamatan $kecamatan
+     * @param  \App\Models\kecamatan $kecamatan
      * @return \Illuminate\Http\Response
      */
     public function show(Kecamatan $kecamatan)
     {
-        return response()->json([
-            'data' => $kecamatan
-        ]);
+        return new ApiResource(true, 'Data kecamatan Berhasil Ditemukan!', $kecamatan);
     }
 
     /**
@@ -76,30 +86,35 @@ class KecamatanApiController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Kecamatan $kecamatan
+     * @param  \App\Models\kecamatan $kecamatan
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Kecamatan $kecamatan)
     {
+        $validator = Validator::make($request->all(), [
+            'nama_kecamatan' => 'required|unique:m_kecamatan'
+        ]);
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         $kecamatan->nama_kecamatan = $request->nama_kecamatan;
         $kecamatan->save();
 
-        return response()->json([
-            'data' => $kecamatan
-        ]);
+        return new ApiResource(true, 'Data kecamatan Berhasil Di Update!', $kecamatan);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Kecamatan $kecamatan
+     * @param  \App\Models\kecamatan $kecamatan
      * @return \Illuminate\Http\Response
      */
     public function destroy(Kecamatan $kecamatan)
     {
         $kecamatan->delete();
-        return response()->json([
-            'message' => 'kecamatan Terhapus'
-        ], 204);
+        return new ApiResource(true, 'Data kecamatan Berhasil Di Hapus!', null);
     }
 }

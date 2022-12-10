@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Kabupaten;
 use App\Models\kecamatan;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
-class kecamatanController extends Controller
+class KecamatanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -37,7 +39,7 @@ class kecamatanController extends Controller
             ->get();
 
         $pdf = Pdf::loadview('kecamatan/kecamatan_pdf', ['kecamatan' => $kecamatan]);
-        return $pdf->stream('laporan-Data-kecamatan-pdf', array("Attachment" => 0));
+        return $pdf->download('laporan-Data-kecamatan-pdf');
     }
 
 
@@ -75,13 +77,30 @@ class kecamatanController extends Controller
      */
     public function store(Request $request)
     {
+        $nama_kecamatan = $request->nama_kecamatan;
+        $id_kabupaten = $request->id_kabupaten;
 
-        $kecamatan = new kecamatan();
-        $kecamatan->id_kecamatan = \Ramsey\Uuid\Uuid::uuid4()->toString();
-        $kecamatan->nama_kecamatan = $request->nama_kecamatan;
-        $kecamatan->id_kabupaten = $request->id_kabupaten;
-        $kecamatan->save();
-        return redirect('kecamatan')->with('flash_message', 'Sukses Menambahkan Kecamatan!');
+
+        $whereData = [
+            ['nama_kecamatan', $nama_kecamatan],
+            ['id_kabupaten', $id_kabupaten],
+        ];
+
+        $count = DB::table('m_kecamatan')->where($whereData)
+            ->count();
+
+        if ($count > 0) {
+            return redirect('kecamatan/create')->with('flash_message', 'Data Kecamatan sudah ada!');
+        } else {
+            //do whatever u need
+
+            $kecamatan = new kecamatan();
+            $kecamatan->id_kecamatan = \Ramsey\Uuid\Uuid::uuid4()->toString();
+            $kecamatan->nama_kecamatan = $request->nama_kecamatan;
+            $kecamatan->id_kabupaten = $request->id_kabupaten;
+            $kecamatan->save();
+            return redirect('kecamatan')->with('flash_message', 'Sukses Menambahkan Kecamatan!');
+        }
     }
 
     /**
@@ -118,14 +137,27 @@ class kecamatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_kecamatan' => 'required|unique:m_kecamatan'
-        ]);
 
-        $kecamatan = kecamatan::find($id);
-        $input = $request->all();
-        $kecamatan->update($input);
-        return redirect('kecamatan')->with('flash_message', 'Sukses Mengedit Kecamatan!');
+        $nama_kecamatan = $request->nama_kecamatan;
+        $id_kabupaten = $request->id_kabupaten;
+
+
+        $whereData = [
+            ['nama_kecamatan', $nama_kecamatan],
+            ['id_kabupaten', $id_kabupaten],
+        ];
+
+        $count = DB::table('m_kecamatan')->where($whereData)
+            ->count();
+
+        if ($count > 0) {
+            return redirect('kecamatan/' . $id)->with('flash_message', 'Data Kecamatan sudah ada!');
+        } else {
+            $kecamatan = kecamatan::find($id);
+            $input = $request->all();
+            $kecamatan->update($input);
+            return redirect('kecamatan')->with('flash_message', 'Sukses Mengedit Kecamatan!');
+        }
     }
 
     /**

@@ -1,9 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
-use App\Models\Kabupaten;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\ApiResource;
+use App\Models\Kabupaten;
+use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
+
 
 class KabupatenApiController extends Controller
 {
@@ -15,9 +20,7 @@ class KabupatenApiController extends Controller
     public function index()
     {
         $kabupaten = Kabupaten::paginate(10);
-        return response()->json([
-            'data' => $kabupaten
-        ]);
+        return new ApiResource(true, 'list data kabupaten', $kabupaten);
     }
 
     /**
@@ -38,13 +41,23 @@ class KabupatenApiController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'nama_kabupaten' => 'required|unique:m_kabupaten'
+        ]);
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+
         $kabupaten = Kabupaten::create([
-            'id_kabupaten' => $request->id_kabupaten,
+            'id_kabupaten' => Uuid::uuid4(),
             'nama_kabupaten' => $request->nama_kabupaten,
         ]);
-        return response()->json([
-            'data' => $kabupaten
-        ]);
+
+        return new ApiResource(true, 'Data Kabupaten Berhasil Ditambahkan!', $kabupaten);
     }
 
     /**
@@ -55,9 +68,7 @@ class KabupatenApiController extends Controller
      */
     public function show(Kabupaten $kabupaten)
     {
-        return response()->json([
-            'data' => $kabupaten
-        ]);
+        return new ApiResource(true, 'Data Kabupaten Berhasil Ditemukan!', $kabupaten);
     }
 
     /**
@@ -80,12 +91,19 @@ class KabupatenApiController extends Controller
      */
     public function update(Request $request, Kabupaten $kabupaten)
     {
+        $validator = Validator::make($request->all(), [
+            'nama_kabupaten' => 'required|unique:m_kabupaten'
+        ]);
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         $kabupaten->nama_kabupaten = $request->nama_kabupaten;
         $kabupaten->save();
 
-        return response()->json([
-            'data' => $kabupaten
-        ]);
+        return new ApiResource(true, 'Data Kabupaten Berhasil Di Update!', $kabupaten);
     }
 
     /**
@@ -97,8 +115,6 @@ class KabupatenApiController extends Controller
     public function destroy(Kabupaten $kabupaten)
     {
         $kabupaten->delete();
-        return response()->json([
-            'message' => 'Kabupaten Terhapus'
-        ], 204);
+        return new ApiResource(true, 'Data Kabupaten Berhasil Di Hapus!', null);
     }
 }

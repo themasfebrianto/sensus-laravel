@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\KabupatenApiController;
-use App\Http\Controllers\KecamatanApiController;
+use App\Http\Controllers\api\KabupatenApiController;
+use App\Http\Controllers\api\KecamatanApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -10,6 +10,7 @@
 @endsection
 
 @section('content')
+
     <div class="card col-8" style="margin:20px;">
         <div class="card-header">Tambah Kabupaten</div>
         <div class="card-body">

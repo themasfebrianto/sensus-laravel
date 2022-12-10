@@ -58,6 +58,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $row->nama_kabupaten }}</td>
                                 <td>
+                                    {{-- {{ $row->id_kabupaten }} --}}
                                     <a href="{{ url('/kabupaten/' . $row->id_kabupaten) }}" title="Edit kabupaten"><button
                                             class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o"
                                                 aria-hidden="true"></i>

@@ -10,6 +10,13 @@
 @endsection
 
 @section('content')
+    @if (session()->has('flash_message'))
+        <div class="card-body">
+            <div class="alert alert-danger mb-2" role="alert">
+                {{ session('flash_message') }}
+            </div>
+        </div>
+    @endif
     <div class="card col-8" style="margin:20px;">
         <div class="card-header">Edit kecamatan</div>
         <div class="card-body">

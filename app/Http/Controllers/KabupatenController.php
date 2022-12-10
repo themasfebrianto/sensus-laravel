@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Ramsey\Uuid\Uuid;
 
 class KabupatenController extends Controller
 {
@@ -31,7 +32,7 @@ class KabupatenController extends Controller
         $kabupaten = Kabupaten::all();
 
         $pdf = Pdf::loadview('kabupaten/kabupaten_pdf', ['kabupaten' => $kabupaten]);
-        return $pdf->stream('laporan-Data-Kabupaten-pdf', array("Attachment" => 0));
+        return $pdf->download('laporan-Data-Kabupaten-pdf');
     }
 
     // /**
@@ -71,7 +72,7 @@ class KabupatenController extends Controller
         ]);
 
         $kabupaten = new Kabupaten();
-        $kabupaten->id_kabupaten = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $kabupaten->id_kabupaten = Uuid::uuid4();
         $kabupaten->nama_kabupaten = $request->nama_kabupaten;
         $kabupaten->save();
         return redirect('kabupaten')->with('flash_message', 'Sukses Menambahkan Kabupaten!');

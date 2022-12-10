@@ -5,7 +5,6 @@ use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\PeringkatController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Kabupaten;
 use Illuminate\Support\Facades\Route;
 
 /*

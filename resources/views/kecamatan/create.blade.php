@@ -10,6 +10,13 @@
 @endsection
 
 @section('content')
+    @if (session()->has('flash_message'))
+        <div class="card-body">
+            <div class="alert alert-danger mb-2" role="alert">
+                {{ session('flash_message') }}
+            </div>
+        </div>
+    @endif
     <div class="card col-8" style="margin:20px;">
         <div class="card-header">Tambah kecamatan</div>
         <div class="card-body">
@@ -26,13 +33,19 @@
                     </div>
                 @enderror
                 <label for="id_kabupaten">Kabupaten</label></br>
-                <select name="id_kabupaten" id="id_kabupaten" class="form-control ">
+                <select name="id_kabupaten" id="id_kabupaten"
+                    class="form-control @error('id_kabupaten') is-invalid @enderror">
                     <option value="">Pilih Kabupaten</option>
                     <!--hasil pluck dari controller produk.index di iterasi di sini-->
                     @foreach ($kabupaten as $key => $item)
                         <option value="{{ $key }}">{{ $item }}</option>
                     @endforeach
                 </select>
+                @error('id_kabupaten')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
                 <input class="btn btn-success mt-4" type="submit" value="Simpan">
             </form>
 
